@@ -52,6 +52,23 @@ var saveFilePath='/tmp';
 io.on('connection', function(socket){
 	console.log('connected by client');
 	var delivery=dl.listen(socket);
+	
+	  delivery.on('delivery.connect',function(delivery){
+		  	console.log('delivery.connect');
+		  	console.log('sending file ');
+		  	delivery.send({
+			      name: 'logo1.png',
+			      path : '/tmp/logo1.png',
+			      params: {foo: 'bar'}
+			    });
+
+		  });
+
+
+	  
+	  delivery.on('receive.start',function(fileUID){
+	        console.log('receiving a file! '+fileUID);
+	      });
 	  delivery.on('receive.success',function(file){
 		    var params = file.params;
 		    fs.writeFile(saveFilePath+'/'+file.name,file.buffer, function(err){
@@ -60,8 +77,13 @@ io.on('connection', function(socket){
 		      }else{
 		        console.log('File saved.');
 		      };
-		    });
+		    });		    
 		  });
+	  
+
+	  fs.readFile('/tmp/logo1.png',function(err, buf){
+		  socket.emit('image',{image:true,buffer:buf});
+	  });
 	  
 	socket.on('client', function(data){
 		console.log('client :'+data.id+'  '+socket.id);
@@ -85,6 +107,11 @@ io.on('connection', function(socket){
 	
 	socket.on('pingTest', function(data){
 		console.log('ping received from '+data.clientId+' '+data.socketId);
+	  	delivery.send({
+		      name: 'logo1.png',
+		      path : './logo1.png',
+		      params: {foo: 'bar'}
+		    });		
 	});
     socket.on('disconnect', function(){
         console.log('client disconnected '+thisClient);
