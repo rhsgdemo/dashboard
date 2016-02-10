@@ -1,0 +1,38 @@
+<html>
+<body>
+	<video id="v" width="300" height="300" autoplay="true"></video>
+	<input id="b" type="button" disabled="true" value="Take Picture"></input>
+	<canvas id="c" style="display:none;" width="300" height="300"></canvas>
+	<img id="i" src=""/>
+</body>
+<script>
+var video = document.querySelector("#v");
+var button = document.getElementById("b");
+var canvas = document.getElementById("c");
+var i=document.getElementById("i");
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+
+//alert(navigator.getUserMedia);
+if (navigator.getUserMedia) {     
+	//alert(123);
+    navigator.getUserMedia({video: true}, handleVideo, videoError);
+}
+ 
+function handleVideo(stream) {
+	console.log('hey');
+    video.src = window.URL.createObjectURL(stream);
+	button.disabled = false;
+	button.onclick = function() {
+		canvas.getContext("2d").drawImage(video, 0, 0, 300, 300, 0, 0, 300, 300);
+		var img = canvas.toDataURL("image/png");
+		i.src=img;
+		alert("done");
+	};    
+}
+ 
+function videoError(e) {
+	console.log('error '+e);
+    // do something
+}
+</script>
+</html>
