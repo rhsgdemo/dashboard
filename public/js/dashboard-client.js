@@ -35,8 +35,8 @@ DashboardClient={
 					console.log('incoming image');
 					//alert(data.buffer);
 					var bytes = new Uint8Array(data.buffer);
-					$('#localImg').width('100%');
-					$('#localImg').height(350);
+					$('#localImg').width(150);
+					$('#localImg').height(100);
 					 $('#localImg').attr('src', DashboardClient.encodeBytes(bytes));
 					 $('#displayDiv').html('Received image from server '+data.position.lat+', '+data.position.lng );
 				});				
@@ -96,6 +96,7 @@ DashboardClient={
 			var v=$('#v');
 			var b=$('#b');
 			var sc=$('#stopCam');
+			var stc=$('#startCam');
 			var sendPhotoBtn=$('#sendPhoto');
 			var c=document.getElementById('c');
 			var video=document.getElementById('v');
@@ -110,14 +111,19 @@ DashboardClient={
 				var img = c.toDataURL("image/png");
 				$('#displayDiv').html('Photo Taken, click send to upload:');
 				i.attr('src',img);
-			});    			
+			}); 
 			sc.on('click', function() {
-				console.log('stop cam '+Object.keys(stream));
+				console.log('stop cam ');
 				video.pause();
 				video.src="";
 				stream.getTracks()[0].stop();
 			});
-			
+			stc.on('click', function() {
+				console.log('start cam ');
+				if (navigator.getUserMedia) {     
+			    	navigator.getUserMedia({video: true}, DashboardClient.handleVideo, DashboardClient.videoError);
+				}	
+			});
 			sendPhotoBtn.on('click', function() {
 				console.log('send photo');
 				var data= DashboardClient.dataURItoBlob(c.toDataURL("image/png"));

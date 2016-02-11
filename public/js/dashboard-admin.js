@@ -89,7 +89,7 @@ DashboardAdmin={
 				content+='<td id=\'client_'+localClients[i].id+'\' >';
 				content+=localClients[i].id;
 				content+='</td>';
-				content+='<td class=\'locationTd\'  id=\'loc_'+localClients[i].id+'\' >';
+				content+='<td class=\'locationTd\'  id=\'loc_'+localClients[i].id+'\' style=\'cursor:pointer;text-decoration:underline;\'>';
 				content+='('+localClients[i].position.lat+','+localClients[i].position.lng+')';
 				content+='</td>';
 				content+='<td id=\'status_'+localClients[i].id+'\' >';
