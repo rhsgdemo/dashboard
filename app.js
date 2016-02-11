@@ -67,6 +67,7 @@ var saveFilePath='/tmp';
 var clients=new Array();
 var thisClient='';
 var currentPos;
+var runningNum=0;
 io.on('connection', function(socket){
 	console.log(' >> connected by client ');
 
@@ -78,6 +79,7 @@ io.on('connection', function(socket){
 		//client.socketObj=socket;
 		client.socket=socket.id;
 		client.position=data.position;
+		client.status='ok';
 		clients.push(client);
 		console.log(clients.length+ '  clients connected');
 		for (var i =0; i<clients.length;i++) {
@@ -137,7 +139,40 @@ io.on('connection', function(socket){
 		socket.broadcast.emit('updateClientLocation', data);
 	});
 
-	
+	//on recevie of photo
+	socket.on('liveImage',function(file){
+		console.log('received live image');		
+		//clientid and position
+		file.runningNum=runningNum;
+		file.name=file.clientId+'_'+(runningNum++)+'_photo.png';
+		fs.writeFile(saveFilePath+'/'+file.name,file.data, function(err){
+			if(err){
+				console.log('File could not be saved.');
+			} else{
+				console.log('File saved.');
+				//as a test, i resend the image back, remove in actual deployment
+				//  fs.readFile('/tmp/'+file.name,function(err, buf){
+					//  socket.emit('image',{image:true,buffer:buf, position:file.position});
+				  //});	
+				
+				//inform admin console
+				//from client: socket.emit('liveImage',{clientId:clientId, name:clientId+'_photo.png',data:data, position:currentPos});
+				socket.broadcast.emit('liveImage',{clientId: file.clientId,file:file});
+			};
+	    });	// end file save			
+	});
+	//broadcast photo 
+	socket.on('broadcastPhoto',function(data){
+		console.log('broadcast photo!');
+		fs.readFile(saveFilePath+'/'+data.fileName,function(err, buf){
+					//  socket.emit('image',{image:true,buffer:buf, position:file.position});
+				  //});	
+				
+				//inform admin console
+				//from client: socket.emit('liveImage',{clientId:clientId, name:clientId+'_photo.png',data:data, position:currentPos});
+				socket.broadcast.emit('image',{image:true,buffer:buf, position:data.position});
+		});		
+	});	
 	//*****************delivery object setup******************
 	var delivery=dl.listen(socket);
 	delivery.on('delivery.connect',function(delivery){
@@ -156,9 +191,9 @@ io.on('connection', function(socket){
 			} else{
 				console.log('File saved.');
 				//as a test, i resend the image back, remove in actual deployment
-				  fs.readFile('/tmp/'+file.name,function(err, buf){
-					  socket.emit('image',{image:true,buffer:buf, position:currentPos});
-				  });				
+				  //fs.readFile('/tmp/'+file.name,function(err, buf){
+					 // socket.emit('image',{image:true,buffer:buf, position:currentPos});
+				  //});				
 			};
 	    });	// end file save	    
 	}); //end delivery receive success	  

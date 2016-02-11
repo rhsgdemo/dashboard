@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Dashboard Template for Bootstrap</title>
+    <title>Dashboard</title>
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -59,10 +59,13 @@
         <div class="col-sm-3 col-md-2 sidebar">
           <ul class="nav nav-sidebar">
             <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+<!--             
             <li><a href="#">Reports</a></li>
             <li><a href="#">Analytics</a></li>
             <li><a href="#">Export</a></li>
-          </ul>
+
+ -->          
+ 		</ul>
 <!--           <ul class="nav nav-sidebar">
             <li><a href="">Nav item</a></li>
             <li><a href="">Nav item again</a></li>
@@ -78,7 +81,7 @@
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">Dashboard</h1>
-
+<!-- 
           <div class="row placeholders">
             <div class="col-xs-6 col-sm-3 placeholder">
               <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
@@ -101,6 +104,12 @@
               <span class="text-muted">Something else</span>
             </div>
           </div>
+ -->
+			<div id="mapSection">
+				<div id="map" style="height:250px;">
+				</div>			
+			</div>	
+			<img id="test" src=""/>
 
           <h2 class="sub-header">Clients</h2>
           <div class="table-responsive">
@@ -110,6 +119,7 @@
                   <th>#</th>
                   <th>Client Id</th>
                   <th>Location</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody id="clientBody">
@@ -130,6 +140,17 @@
 	<script type="text/javascript">
 	 var btnAction=null;
 	var socket;
+	var localClients;
+	//map
+	var map;
+	var marker;
+	var currentPos;	
+	var infoWindow;	  
+	var clientMarkers=[];	
+	var photoMarkers=[];
+	var clientImages=[];
+	var liveImageInfoWindow;
+	var runningNum=0; //lousy design to have a unique number, keep increasing everytime it is invoke... not for production use
 	</script>
 	<script src="js/dashboard-admin.js"></script>
 	<script type="text/javascript">
@@ -154,8 +175,8 @@
 	<script type="text/javascript">
 	//map functions moved to dashboard-server.js
 	</script>	
-<!--     <script async defer
+    <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDErpMxmykosJr3tMgcy6pJzbSInc5gke4&callback=initMap">
-    </script>	 -->  
+    </script>	  
   </body>
 </html>

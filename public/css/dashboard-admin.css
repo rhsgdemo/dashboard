@@ -103,3 +103,14 @@ body {
   display: inline-block;
   border-radius: 50%;
 }
+
+   #div2blink{
+        -webkit-transition: backgroundColor 0.05s ease-in-out;
+        -moz-transition:    backgroundColor 0.05s ease-in-out;
+        -ms-transition:     backgroundColor 0.05s ease-in-out;
+        transition:         backgroundColor 0.05s ease-in-out;
+    }
+    
+     .backgroundBlink{
+        background: #ddd;
+    }

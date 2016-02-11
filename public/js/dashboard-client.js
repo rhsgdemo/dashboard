@@ -8,7 +8,7 @@ DashboardClient={
 			if (btnConnectStatus==0) {
 				console.log(' >> connect : '+$('#formClientId').val() );
 				btnConnectStatus=1
-				$('#btnConnect').html('Logout');
+				$('#btnConnect').html('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Logout');
 				clientId=$('#formClientId').val();
 				$('#formClientId').val('Client: '+clientId);
 				$('#statusLabel').html('Status : connected');
@@ -38,7 +38,7 @@ DashboardClient={
 					$('#localImg').width('100%');
 					$('#localImg').height(350);
 					 $('#localImg').attr('src', DashboardClient.encodeBytes(bytes));
-					 $('#displayDiv').html('received image from '+data.position.lat+', '+data.position.lng );
+					 $('#displayDiv').html('Received image from server '+data.position.lat+', '+data.position.lng );
 				});				
 				//************setting up delivery object******************
 				delivery=new Delivery(socket);
@@ -89,6 +89,71 @@ DashboardClient={
 				socket=io();
 			} else
     		socket.emit('updateClientLocation',{clientId:clientId, position:currentPos});
+		},
+		
+		handleVideo:function(stream) {
+			console.log('handleVideo');
+			var v=$('#v');
+			var b=$('#b');
+			var sc=$('#stopCam');
+			var sendPhotoBtn=$('#sendPhoto');
+			var c=document.getElementById('c');
+			var video=document.getElementById('v');
+			var i=$('#localImg');
+			var snap=window.URL.createObjectURL(stream);
+		    v.attr('src', snap);
+			//button.disabled = false;
+			b.on('click', function() {
+				console.log('picture clicked');
+				//c.getContext("2d").drawImage(video, 0, 0, 200, 200, 0, 0, 200, 200);
+				c.getContext("2d").drawImage(video, 0, 0, 150,100);
+				var img = c.toDataURL("image/png");
+				$('#displayDiv').html('Photo Taken, click send to upload:');
+				i.attr('src',img);
+			});    			
+			sc.on('click', function() {
+				console.log('stop cam '+Object.keys(stream));
+				video.pause();
+				video.src="";
+				stream.getTracks()[0].stop();
+			});
+			
+			sendPhotoBtn.on('click', function() {
+				console.log('send photo');
+				var data= DashboardClient.dataURItoBlob(c.toDataURL("image/png"));
+				if (socket==null) {
+					socket=io();
+				} else {
+					socket.emit('liveImage',{clientId:clientId, name:clientId+'_photo.png',data:data, position:currentPos});
+					$('#displayDiv').html('Photo uploaded');
+					i.attr('src','');
+
+				}
+			});
+			
+			
+		},
+		videoError:function(e) {
+			console.log('error '+e);
+		},
+		dataURItoBlob:function(dataURI) {
+		    // convert base64/URLEncoded data component to raw binary data held in a string
+		    var byteString;
+		    if (dataURI.split(',')[0].indexOf('base64') >= 0)
+		        byteString = atob(dataURI.split(',')[1]);
+		    else
+		        byteString = unescape(dataURI.split(',')[1]);
+
+		    // separate out the mime component
+		    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+		    // write the bytes of the string to a typed array
+		    var ia = new Uint8Array(byteString.length);
+		    for (var i = 0; i < byteString.length; i++) {
+		        ia[i] = byteString.charCodeAt(i);
+		    }
+
+		    return new Blob([ia], {type:mimeString});			
 		},
 		encodeBytes: function (input)  {
 		    var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
