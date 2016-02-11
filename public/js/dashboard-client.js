@@ -27,7 +27,8 @@ DashboardClient={
 				socket.on('msg',function(data){
 					console.log('incoming message');
 					$('#displayDiv').show();
-					var m=$('#displayDiv').html()+'<br/><b>message from '+data.from+': ['+data.msg+']</b>';
+					//var m=$('#displayDiv').html()+'<br/><b>message from '+data.from+': ['+data.msg+']</b>';
+					var m='<br/><b>message from '+data.from+': ['+data.msg+']</b>';
 					$('#displayDiv').html(m);
 				});				
 				//socket on receiving incoming image (delivery does not work for client)
@@ -53,7 +54,7 @@ DashboardClient={
 			    
 			} else {
 				console.log(' >> disconnect : '+$('#formClientId').val() );
-				$('#btnConnect').html('Login');
+				$('#btnConnect').html(' <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> login ');
 				btnConnectStatus=0;
 				$('#formClientId').val('');
 				$('#formClientId').attr('readonly',false);
@@ -213,7 +214,7 @@ if (navigator.geolocation) {
 	    	position:currentPos,
 	    	map: map,
 	    	draggable:true,
-	    	title: 'Hello World!'
+	    	title:''
   		});
 		marker.setMap(map);			      
  		map.addListener('click', function(event) {
