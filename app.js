@@ -68,6 +68,7 @@ var clients=new Array();
 var thisClient='';
 var currentPos;
 var runningNum=0;
+var jdgHelper=dashboard.jdgHelper;
 io.on('connection', function(socket){
 	console.log(' >> connected by client ');
 
@@ -89,6 +90,9 @@ io.on('connection', function(socket){
 			//check for duplicated Id
 			//TODO
 		}
+		//save client to jdg
+		//dashboard.jdgHelper.test('yooo');
+		jdgHelper.saveClient(client);
 		socket.broadcast.emit('updateClients',clients);
 	});// end on connect from client	
 	
@@ -110,15 +114,18 @@ io.on('connection', function(socket){
 	socket.on('disconnect',function(data){
 
 		console.log('=================unexpected disconnect '+socket.id);
+		var c;
 		//do a check for all active sockets??
 		for (var i =0; i<clients.length;i++) {
 			if (clients[i].socket==socket.id) {
-				console.log('found client....popping it '+clients[i].id+':'+clients[i].socket);
+				c=clients[i].id;
+				console.log('==found client....popping it '+clients[i].id+':'+clients[i].socket);
 				clients.pop(client[i]);
 				break;
 			}
 		}	
-		socket.broadcast.emit('updateClients',clients);		
+		socket.broadcast.emit('updateClients',clients);
+		jdgHelper.deleteClient(c);
 	});	
 	//on receiving message from client
 	socket.on('msg', function(data){
@@ -127,10 +134,58 @@ io.on('connection', function(socket){
 		//socket.emit('msg',data );
 	});	
 	
+
 	//get number of clients
 	socket.on('getClients',function(data) {
 		console.log('returning number of clients');
-		socket.emit('sendClients', clients);
+		jdgHelper.getClients(function(output){
+			//console.log(dashboard.jdgList);
+			console.log("from getClients "+output);
+			var start,end=0;
+			var retrievedClients=[];
+			var clientIds=[];
+			var tmpStr;
+			while (start!=-1) {
+				start=output.indexOf('"');
+				if (start!=-1) {
+					tmpStr=output.substring(start+1);
+					console.log('1.'+tmpStr);
+					end=tmpStr.indexOf('"');
+					console.log('2.'+tmpStr.substring(0,end));
+					var cid=tmpStr.substring(0,end);
+					clientIds.push(cid);
+					//clientIds.push(tmpStr.substring(0,end));
+					
+					output=tmpStr.substring(end+1);
+					console.log('3.'+output);
+				}
+			
+			}
+			console.log('client ids: '+clientIds.length);
+			var x=0;
+			if (clientIds.length==0) {
+				socket.emit('sendClients', retrievedClients);
+			} else
+				{
+					clientIds.forEach(function(entry){
+						jdgHelper.getClient(entry, function(clientData){
+							console.log('Got client id :'+clientData);
+							console.log('Got client id :'+JSON.parse(clientData).id);
+							retrievedClients.push(JSON.parse(clientData));
+							console.log('==========='+retrievedClients.length);
+							x++;
+							console.log('>>>'+x);
+							if (x==clientIds.length) {
+								
+								console.log(retrievedClients.length + ' clients retrieved');
+								clients=retrievedClients
+								//socket.emit('sendClients', retrievedClients);
+								socket.emit('sendClients', clients);
+							}
+						});			
+					});
+			}//else
+		});
 	});
 	
 	//on update of client location

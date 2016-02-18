@@ -106,7 +106,7 @@
           </div>
  -->
 			<div id="mapSection">
-				<div id="map" style="height:250px;">
+				<div id="map" style="height:400px;">
 				</div>			
 			</div>	
 			<img id="test" src=""/>
@@ -159,7 +159,8 @@
 			$( ".btn" ).bind("click", function(e) {
 				  btnClick(e);
 			}); 
-
+			//do a rest call to update  the latest client
+			console.log('connect to server');
 			 DashboardAdmin.connect();
 	 }
 
