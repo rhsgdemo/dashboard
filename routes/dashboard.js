@@ -45,7 +45,7 @@ exports.dashboardadmin = function(req, res) {
 
 var http = require('http');
 var cacheName = 'demoCache' || process.env[CACHE_NAME] ;
-var DG_PUBLIC_HOST = 'dg.cloudapps.demo.com' //quick and dirty hack
+var DG_PUBLIC_HOST = 'dg.cloudapps.demo.com' 
 		|| process.env[APPLICATION_NAME + '_DG_SERVICE_HOST'];
 var DG_PUBLIC_PORT = '80'
 		|| process.env[APPLICATION_NAME + '_DG_SERVICE_PORT'];
