@@ -57,8 +57,8 @@ http.listen(app.get('port'), function(){
 	  console.log('Express server listening on port ' + app.get('port'));
 });
 */
-https.listen(8443, function(){
-	  console.log('Express server listening on port 8443');
+https.listen(app.get('port'), function(){
+	  console.log('Express server listening on port '+ app.get('port'));
 });
 
 //*****************************socket.io*******************************
