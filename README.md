@@ -3,7 +3,8 @@ Nodejs Demo on Openshift , real time location tracking , image sharing
 ========================================================================
 
 #Usage
-Deploy on nodejs builder image on openshift 3
+Deploy on nodejs builder image on openshift 3 via s2i
+
 route termination : passthrough
 
 # screenshot
