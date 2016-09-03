@@ -1,21 +1,18 @@
 
+Nodejs Demo on Openshift , real time location tracking , image sharing
+========================================================================
 
-# dashboard
+#Usage
+Deploy on nodejs builder image on openshift 3
+route termination : passthrough
 
+# screenshot
+1. Real time location info updated on dashboard
+![dashboard] (https://github.com/wohshon/dashboard/blob/master/dashboard.png)
+2. Clients on html5 apps take photo and share across other clients
+![client1] (https://github.com/wohshon/dashboard/blob/master/client1.png)
+3. Images uploaded to dashboard
+![dashboard 2] (https://github.com/wohshon/dashboard/blob/master/dashboard-1.png)
+4. Photo shared to other clients
+![client2] (https://github.com/wohshon/dashboard/blob/master/client-2.png)
 
-
-## Usage
-
-
-
-## Developing
-
-
-
-### Tools
-
-Created with [Nodeclipse](https://github.com/Nodeclipse/nodeclipse-1)
- ([Eclipse Marketplace](http://marketplace.eclipse.org/content/nodeclipse), [site](http://www.nodeclipse.org))   
-
-Nodeclipse is free open-source project that grows with your contributions.
-# dashboard
