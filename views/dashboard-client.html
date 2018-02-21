@@ -56,7 +56,7 @@
 	</nav>
 	<div id="main" class="container">	<!-- main container -->
 		<div style="width: 20%; margin-left: auto; margin-right: auto;background-color: #fff;text-align: center;">
-			<h4>Client</h4>
+			<h4>Client View</h4>
 		</div>
 		<div style="width: 40%; margin-left: auto; margin-right: auto;background-color: #fff;text-align: center;">
 				<label id="statusLabel">Status : disconnected </label>
@@ -64,40 +64,40 @@
 		<div id="formDiv">
 			<div class="row" style="width: 80%; margin-left: auto; margin-right: auto;background-color: #fff;text-align: center;">
 				<div class="col-md-6">
-					<input type="text" class="form-control" placeholder="Enter Staff ID" id="formClientId" />				
+					<input type="text" class="form-control" placeholder="Enter Staff ID" id="formClientId" />
 				</div>
 				<div class="col-md-6">
-				   <button id="btnConnect" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> login </button>				
-				</div>				
+				   <button id="btnConnect" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> login </button>
+				</div>
 			</div>
-			
+
 			<div class="row" style="width: 80%; margin-left: auto; margin-right: auto;background-color: #fff;text-align: center;">
 				<div class="col-md-6">
-					<input type="text" class="form-control" placeholder="Enter Message" id="formMsg"/>				
+					<input type="text" class="form-control" placeholder="Enter Message" id="formMsg"/>
 				</div>
 				<div class="col-md-6">
-					<button id="btnSendMsg" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-send" aria-hidden="true"></span> send </button>				
-				</div>				
+					<button id="btnSendMsg" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-send" aria-hidden="true"></span> send </button>
+				</div>
 			</div>
-			
+
 			<div class="row" style="width: 95%; margin-left:30px;background-color: #fff;">
 				<div id="displayDiv" class="container" style="width: 70%; height: 55px; text-align: center; background-color: #fff; padding-top: 10px;">
 				</div>	<!-- end displayDiv -->
 			</div>
-			
+
 			<div class="row" style="width: 95%; margin-left: auto; margin-right: auto;background-color: #fff;text-align: center;">
 				<div class="col-md-3">
-							<button id="startCam" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-play" aria-hidden="true"></span> start cam </button>									
+							<button id="startCam" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-play" aria-hidden="true"></span> start cam </button>
 				</div>
 				<div class="col-md-3">
-							<button id="stopCam" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>stop cam</button>									
-				</div>				
+							<button id="stopCam" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>stop cam</button>
+				</div>
 				<div class="col-md-3">
 							<button id="b" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-camera" aria-hidden="true"></span> take photo </button>
-				</div>				
+				</div>
 				<div class="col-md-3">
-							<button id="sendPhoto" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-picture" aria-hidden="true"></span> send </button>						
-				</div>				
+							<button id="sendPhoto" type="button" class="btn btn-default"> <span class="glyphicon glyphicon-picture" aria-hidden="true"></span> send </button>
+				</div>
 			</div>
 
 			<div class="row" style="width: 95%; margin-left: auto; margin-right: auto;background-color: #fff;text-align: center;">
@@ -113,17 +113,17 @@
 					<div>
 						<div id="imgDiv" class="container" style="width: 100%; height: 100px; text-align: center; background-color: #fff;">
 							<img id="localImg" src="" ></img>
-						</div>					
+						</div>
 					</div>
-				</div>			
-			</div>		
-			
+				</div>
+			</div>
+
 			<div class="row" style="width: 70%; margin-left: auto; margin-right: auto;background-color: #fff;text-align: center;">
 					<div id="map" style="height: 250px;">
-					</div>			
-			
-			</div>			
-			
+					</div>
+
+			</div>
+
 		</div>
 	</div><!-- end main container -->
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -136,14 +136,14 @@
 	 var file=null;
 	 var btnAction=null;
 	 var btnConnectStatus=0;
-	 var clientId=null;	
+	 var clientId=null;
 	 var socket=null;
 	 var delivery=null;
 	//map
 	var map;
 	var marker;
-	var currentPos;	
-	var infoWindow;	  
+	var currentPos;
+	var infoWindow;
 
 	</script>
 	<script src="js/dashboard-client.js"></script>
@@ -152,7 +152,7 @@
 		 //alert('ready');
 			$( ".btn" ).bind("click", function(e) {
 				  btnClick(e);
-			}); 
+			});
 
 			$("#formFile").bind("change", function(e) {
 				file=e.target.files[0];
@@ -162,16 +162,16 @@
 				console.log(tmppath);
 				 $('#localImg').attr('src', tmppath);
 				e.preventDefault();
-			});	
-				 
-			navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;	
-			if (navigator.getUserMedia) {     
+			});
+
+			navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+			if (navigator.getUserMedia) {
 				//alert(123);
 			    navigator.getUserMedia({video: true}, DashboardClient.handleVideo, DashboardClient.videoError);
-			}				
+			}
 	 }
 
-		 
+
 	function btnClick(event){
 		 var targetId=event.target.id;
 		console.log(targetId +' clicked');
@@ -181,17 +181,17 @@
 			DashboardClient.sendMsg();
 		}  else if (targetId=='btnSendFile') {
 			DashboardClient.sendFile();
-		}		
+		}
 	}	//btnClick
 	$( document ).ready( readyFn );
 	</script>
-	
+
 	<script type="text/javascript">
 	//map functions moved to dashboard-client.js
-	</script>	
+	</script>
     <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDErpMxmykosJr3tMgcy6pJzbSInc5gke4&callback=initMap">
-    </script>	
-	
+    </script>
+
 </body>
 </html>
