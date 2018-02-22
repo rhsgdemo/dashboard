@@ -3,7 +3,7 @@
  */
 
 DashboardClient={
-		
+
 		connect: function() {
 			if (btnConnectStatus==0) {
 				console.log(' >> connect : '+$('#formClientId').val() );
@@ -17,7 +17,7 @@ DashboardClient={
 				// socket on connect
 				socket.on('connect', function(){
 					console.log('connected to server:  '+clientId+' socket id: '+socket.id);
-					socket.emit('client',{id: clientId, position:currentPos});				
+					socket.emit('client',{id: clientId, position:currentPos});
 					socket.on('toClient',function(data){
 						//$('#displayDiv').show();
 						$('#statusLabel').html(data);
@@ -30,28 +30,28 @@ DashboardClient={
 					//var m=$('#displayDiv').html()+'<br/><b>message from '+data.from+': ['+data.msg+']</b>';
 					var m='<br/><b>message from '+data.from+': ['+data.msg+']</b>';
 					$('#displayDiv').html(m);
-				});				
+				});
 				//socket on receiving incoming image (delivery does not work for client)
 				socket.on('image',function(data){
 					console.log('incoming image');
 					//alert(data.buffer);
 					var bytes = new Uint8Array(data.buffer);
-					$('#localImg').width(150);
-					$('#localImg').height(100);
+					$('#localImg').width(200);
+					$('#localImg').height(150);
 					 $('#localImg').attr('src', DashboardClient.encodeBytes(bytes));
 					 $('#displayDiv').html('Received image from server '+data.position.lat+', '+data.position.lng );
-				});				
+				});
 				//************setting up delivery object******************
 				delivery=new Delivery(socket);
 				delivery.on('delivery.connect',function(delivery){
 					console.log('delivery connected');
-				});				
+				});
 			    delivery.on('send.success',function(fileUID){
 			        console.log("file was successfully sent.");
 			        $('#displayDiv').html('file sent');
 			     });
-			    
-			    
+
+
 			} else {
 				console.log(' >> disconnect : '+$('#formClientId').val() );
 				$('#btnConnect').html(' <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span> login ');
@@ -70,7 +70,7 @@ DashboardClient={
 				console.log('sending message');
 				socket.emit('msg',{from: clientId, msg:$('#formMsg').val()});
 				$('#displayDiv').html('message sent');
-			}		
+			}
 		},
 		sendFile: function()  {
 			if (socket==null) {
@@ -82,7 +82,7 @@ DashboardClient={
 				var params={currentPos:currentPos};
 				delivery.send(file,params);
 				//socket.emit('msg',{from: clientId, msg:$('#formMsg').val()});
-			}		
+			}
 		},
 		updateClientLocation:function(currentPos) {
 			console.log('client update location');
@@ -91,7 +91,7 @@ DashboardClient={
 			} else
     		socket.emit('updateClientLocation',{clientId:clientId, position:currentPos});
 		},
-		
+
 		handleVideo:function(stream) {
 			console.log('handleVideo');
 			var v=$('#v');
@@ -108,11 +108,11 @@ DashboardClient={
 			b.on('click', function() {
 				console.log('picture clicked');
 				//c.getContext("2d").drawImage(video, 0, 0, 200, 200, 0, 0, 200, 200);
-				c.getContext("2d").drawImage(video, 0, 0, 150,100);
+				c.getContext("2d").drawImage(video, 0, 0, 200,150);
 				var img = c.toDataURL("image/png");
 				$('#displayDiv').html('Photo Taken, click send to upload:');
 				i.attr('src',img);
-			}); 
+			});
 			sc.on('click', function() {
 				console.log('stop cam ');
 				video.pause();
@@ -121,9 +121,26 @@ DashboardClient={
 			});
 			stc.on('click', function() {
 				console.log('start cam ');
-				if (navigator.getUserMedia) {     
-			    	navigator.getUserMedia({video: true}, DashboardClient.handleVideo, DashboardClient.videoError);
-				}	
+				if (navigator.mediaDevices.getUserMedia) {
+		         //alert(navigator.mediaDevices.getUserMedia);
+		         console.log(navigator.mediaDevices.getUserMedia);
+		         console.log(navigator.getUserMedia);
+		         navigator.mediaDevices.getUserMedia({video:true})
+						 //this format does not work on mobile
+						 //navigator.mediaDevices.getUserMedia({video: {width: 200, height:150}})
+		         .then(function(stream) {
+		           DashboardClient.handleVideo(stream);
+		         })
+		         .catch(function(err) {
+		           /* handle the error */
+		           DashboardClient.videoError(stream);
+		         });
+
+		    }
+		    else {
+		      console.log('Error getting usermedia');
+		    }
+
 			});
 			sendPhotoBtn.on('click', function() {
 				console.log('send photo');
@@ -137,8 +154,8 @@ DashboardClient={
 
 				}
 			});
-			
-			
+
+
 		},
 		videoError:function(e) {
 			console.log('error '+e);
@@ -160,7 +177,7 @@ DashboardClient={
 		        ia[i] = byteString.charCodeAt(i);
 		    }
 
-		    return new Blob([ia], {type:mimeString});			
+		    return new Blob([ia], {type:mimeString});
 		},
 		encodeBytes: function (input)  {
 		    var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
@@ -170,7 +187,7 @@ DashboardClient={
 
 		    while (i < input.length) {
 		        chr1 = input[i++];
-		        chr2 = i < input.length ? input[i++] : Number.NaN; // Not sure if the index 
+		        chr2 = i < input.length ? input[i++] : Number.NaN; // Not sure if the index
 		        chr3 = i < input.length ? input[i++] : Number.NaN; // checks are needed here
 
 		        enc1 = chr1 >> 2;
@@ -197,7 +214,7 @@ function initMap() {
 	    zoom: 15
 	  });
     infoWindow = new google.maps.InfoWindow({map: map});
-		  
+
 }
 // Try HTML5 geolocation.
 if (navigator.geolocation) {
@@ -216,7 +233,7 @@ if (navigator.geolocation) {
 	    	draggable:true,
 	    	title:''
   		});
-		marker.setMap(map);			      
+		marker.setMap(map);
  		map.addListener('click', function(event) {
 	  		console.log('clicked on map '+event.latLng);
 	    	//map.setZoom(8);
@@ -225,11 +242,11 @@ if (navigator.geolocation) {
 	    	map.panTo(marker.getPosition());
 	    	currentPos=marker.getPosition();
 	    	DashboardClient.updateClientLocation(currentPos);
-		});			  
+		});
 	}, function() {
 	handleLocationError(true, infoWindow, map.getCenter());
 	});
 } else {
 		// Browser doesn't support Geolocation
 		handleLocationError(false, infoWindow, map.getCenter());
-}		  
+}
