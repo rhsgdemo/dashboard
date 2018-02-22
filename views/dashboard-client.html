@@ -55,7 +55,7 @@
 		</div>
 	</nav>
 	<div id="main" class="container">	<!-- main container -->
-		<div style="width: 20%; margin-left: auto; margin-right: auto;background-color: #fff;text-align: center;">
+		<div style="width: 50%; margin-left: auto; margin-right: auto;background-color: #fff;text-align: center;">
 			<h2>Client View</h2>
 		</div>
 		<div style="width: 40%; margin-left: auto; margin-right: auto;background-color: #fff;text-align: center;">
@@ -163,12 +163,48 @@
 				 $('#localImg').attr('src', tmppath);
 				e.preventDefault();
 			});
+//navigator.mediaDevices.getUserMedia()
+//
+//      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+//			if (navigator.getUserMedia) {
+//			     alert(123);
+//			    navigator.getUserMedia({video: true}, DashboardClient.handleVideo, DashboardClient.videoError);
+//			} else {
+//        alert(456);
+//      }
 
-			navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
-			if (navigator.getUserMedia) {
-				//alert(123);
-			    navigator.getUserMedia({video: true}, DashboardClient.handleVideo, DashboardClient.videoError);
-			}
+//navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+//navigator.mediaDevices.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+// navigator.mediaDevices.enumerateDevices()
+//   .then(function(devices) {
+//     devices.forEach(function(device) {
+//       alert(device.kind + ": " + device.label +
+//         " id = " + device.deviceId);
+//     });
+//   })
+//   .catch(function(err) {
+//     console.log(err.name + ": " + error.message);
+//   });
+
+if (navigator.mediaDevices.getUserMedia) {
+     //alert(navigator.mediaDevices.getUserMedia);
+     console.log(navigator.mediaDevices.getUserMedia);
+     console.log(navigator.getUserMedia);
+     navigator.mediaDevices.getUserMedia({video:true})
+     .then(function(stream) {
+       DashboardClient.handleVideo(stream);
+     })
+     .catch(function(err) {
+       /* handle the error */
+       DashboardClient.videoError(stream);
+     });
+
+}
+else {
+
+  console.log(456);
+}
+
 	 }
 
 
