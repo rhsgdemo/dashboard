@@ -68,7 +68,7 @@ DashboardClient={
 				socket=io();
 			} else {
 				console.log('sending message');
-				socket.emit('msg',{from: clientId, msg:$('#formMsg').val()});
+				socket.emit('msg',{from: clientId, msg:$('#formMsg').val(), pos:currentPos});
 				$('#displayDiv').html('message sent');
 			}
 		},
@@ -88,8 +88,10 @@ DashboardClient={
 			console.log('client update location');
 			if (socket==null) {
 				socket=io();
-			} else
+			} else {
     		socket.emit('updateClientLocation',{clientId:clientId, position:currentPos});
+			}
+			infoWindow.close();
 		},
 
 		handleVideo:function(stream) {

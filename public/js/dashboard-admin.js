@@ -5,24 +5,25 @@ DashboardAdmin={
 			socket.on('connect', function(){
 				console.log('connected to server as admin:  socket id: '+socket.id);
 				socket.emit('getClients');
-				
+
 				socket.on('sendClients', function(data){
 					console.log('number of clients: '+data.length);
 					//update UI
-					DashboardAdmin.updateClientConsoleUI(data);					
+					DashboardAdmin.updateClientConsoleUI(data);
 				});
-				
+
 				socket.on('updateClients',function(data){
 					console.log('updated clients info coming in...'+data.length);
 					//update UI
 					DashboardAdmin.updateClientConsoleUI(data);
-				});	
+				});
 				socket.on('updateClientLocation',function(data){
 					console.log('updated clients location ...'+data.clientId);
 					//update UI
 					DashboardAdmin.updateClientConsoleLocation(data);
-				});			
+				});
 				socket.on('liveImage',function(data){
+					console.log(Object.keys(data));
 					console.log('incoming image from ...'+data.clientId);
 					//update UI
 					var el=$('#status_'+data.clientId);
@@ -40,7 +41,7 @@ DashboardAdmin={
 					liveImageInfoWindow = new google.maps.InfoWindow({
 						map: map,
 						position: data.file.position,
-						content:'<div>Photo Taken by '+clientImg.clientId+'</div>',
+						content:'<div><b>Photo Taken by '+clientImg.clientId+'</b></div>',
 						maxWidth:250
 					});
 					var bytes = new Uint8Array(data.file.data);
@@ -53,20 +54,36 @@ DashboardAdmin={
 					      // whatever you want to do once the DOM is ready
 						$('#'+clientImg.refName).on('click',function(event){
 							console.log(event.target.id+ ' clicked ' );
-							socket.emit('broadcastPhoto',{clientId:clientImg.clientId, fileName:clientImg.refName+'_photo.png',position:clientImg.position});					
+							socket.emit('broadcastPhoto',{clientId:clientImg.clientId, fileName:clientImg.refName+'_photo.png',position:clientImg.position});
 						});
-												
-					});					
+						if (liveImageInfoWindows[data.clientId]) {
+							liveImageInfoWindows[data.clientId].close()
+						}
+						liveImageInfoWindows[data.clientId]=liveImageInfoWindow;
+					});
 
-				});			
-				
-			});// end socket.on connect			
+				});
+				socket.on('msg',function(data){
+					//alert(data.from+' '+data.msg);
+					msgInfoWindow = new google.maps.InfoWindow({
+						map: map,
+						position: data.pos,
+						content:'<div><b>Message from '+data.from+':</b><div>'+data.msg+'</div></div>',
+						maxWidth:250
+					});
+					if (msgInfoWindows[data.from]) {
+						msgInfoWindows[data.from].close()
+					}
+					msgInfoWindows[data.from]=msgInfoWindow;
+				});
+
+			});// end socket.on connect
 		},
 		getClients:function() {
-			
+
 			socket.emit('getClients');
 		},
-		
+
 		updateClientConsoleUI:function(clients) {
 			localClients=clients;
 			//clear all markers
@@ -95,10 +112,10 @@ DashboardAdmin={
 				content+='<td id=\'status_'+localClients[i].id+'\' >';
 				content+='('+localClients[i].status+')';
 				content+='</td>';
-				
+
 				content+='</tr>';
 				//create marker
-				
+
 				var clientMarker = new google.maps.Marker({
 			    	position:localClients[i].position,
 			    	map: map,
@@ -118,31 +135,35 @@ DashboardAdmin={
 					if (localClients[i].id==cid) {
 						map.setCenter(localClients[i].marker.position);
 					}
-				}				
+				}
 			});
-			
+
 		},
 		updateClientConsoleLocation:function(data) {
 			console.log('update location! '+data.clientId);
 			var el=$('#loc_'+data.clientId);
 			el.html('('+data.position.lat+', '+data.position.lng+')');
 			DashboardAdmin.blink(el);
-			$('#status_'+data.clientId).html('(ok)');			
+			$('#status_'+data.clientId).html('(ok)');
 			var i=0;
 			for (i=0;i<localClients.length;i++) {
 				if (localClients[i].id==data.clientId) {
 					localClients[i].marker.setPosition(data.position);
 				}
 			}
+
+			//assumed location updated, clear old message infoWindow
+			msgInfoWindows[data.clientId].close();
+			liveImageInfoWindows[data.clientId].close();
 		},
-		
+
 		blink:function(ele) {
 			setTimeout(function(){
 		        ele.toggleClass("backgroundBlink");
-		     },400)			
+		     },400)
 			setTimeout(function(){
 		        ele.removeClass("backgroundBlink");
-		     },800)					
+		     },800)
 		},
 		dataURItoBlob:function(dataURI) {
 		    // convert base64/URLEncoded data component to raw binary data held in a string
@@ -161,7 +182,7 @@ DashboardAdmin={
 		        ia[i] = byteString.charCodeAt(i);
 		    }
 
-		    return new Blob([ia], {type:mimeString});			
+		    return new Blob([ia], {type:mimeString});
 		},
 		encodeBytes: function (input)  {
 		    var keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
@@ -171,7 +192,7 @@ DashboardAdmin={
 
 		    while (i < input.length) {
 		        chr1 = input[i++];
-		        chr2 = i < input.length ? input[i++] : Number.NaN; // Not sure if the index 
+		        chr2 = i < input.length ? input[i++] : Number.NaN; // Not sure if the index
 		        chr3 = i < input.length ? input[i++] : Number.NaN; // checks are needed here
 
 		        enc1 = chr1 >> 2;
@@ -188,7 +209,7 @@ DashboardAdmin={
 		                  keyStr.charAt(enc3) + keyStr.charAt(enc4);
 		    }
 		    return "data:image/jpg;base64,"+output;
-		}		
+		}
 };
 
 function initMap() {
@@ -197,7 +218,7 @@ function initMap() {
 	    zoom: 15
 	  });
   //infoWindow = new google.maps.InfoWindow({map: map});
-		  
+
 }
 //Try HTML5 geolocation.
 if (navigator.geolocation) {
@@ -216,14 +237,14 @@ if (navigator.geolocation) {
 	    	draggable:true,
 	    	title: 'Hello World!'
 		});
-*/		
-		//marker.setMap(map);			      
+*/
+		//marker.setMap(map);
 		map.addListener('click', function(event) {
-		});			  
+		});
 	}, function() {
 	handleLocationError(true, infoWindow, map.getCenter());
 	});
 } else {
 		// Browser doesn't support Geolocation
 		handleLocationError(false, infoWindow, map.getCenter());
-}	
+}
