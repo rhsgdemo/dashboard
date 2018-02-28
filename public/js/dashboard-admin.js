@@ -100,6 +100,7 @@ DashboardAdmin={
 				content+='<tr><td colspan=\'3\'>No clients connected</td></tr>';
 			}
 			for (i=0; i<localClients.length;i++) {
+			  if (localClients[i].position) { 
 				content+='<tr>';
 				content+='<td id=\'cnt_'+localClients[i].id+'\' >';
 				content+=(i+1);
@@ -124,6 +125,7 @@ DashboardAdmin={
 				});
 				clientMarkers.push(clientMarker);
 				localClients[i].marker=clientMarker;
+			    }
 			}
 			$('#clientBody').html(content);
 			$('.locationTd').on('click',function(event) {
@@ -153,7 +155,9 @@ DashboardAdmin={
 			}
 
 			//assumed location updated, clear old message infoWindow
-			msgInfoWindows[data.clientId].close();
+			if (msgInfoWindows[data.clientId]) {
+				msgInfoWindows[data.clientId].close();
+			}
 			liveImageInfoWindows[data.clientId].close();
 		},
 
